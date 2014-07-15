@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/Shapes/Line.qml</file>
+        <file>qml/Shapes/DeformableBox.qml</file>
+        <file>qml/Shapes/MovablePoint.qml</file>
+        <file>qml/Common/Storage.qml</file>
+        <file>qml/Views/HomographyView.qml</file>
+        <file>qml/Style/TabStyle.qml</file>
+        <file>qml/Forms/InputSlider.qml</file>
+        <file>qml/Views/CalibrationView.qml</file>
+        <file>qml/Shapes/Mesh.qml</file>
+    </qresource>
+</RCC>
