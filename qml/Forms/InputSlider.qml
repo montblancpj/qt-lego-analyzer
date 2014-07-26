@@ -10,7 +10,7 @@ RowLayout {
     property double defaultValue : 0.0
     property alias  sliderWidth  : slider.width_
     property alias  textWidth    : input.width_
-    property int    fixedLength  : 0
+    property int    fixedLength  : 2
 
     Text {
         text: label

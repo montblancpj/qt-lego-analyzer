@@ -5,7 +5,7 @@ namespace MontBlanc
 {
 
 OpenCVImage::OpenCVImage(QQuickItem *parent) :
-    QQuickPaintedItem(parent), gamma_(1.0)
+    QQuickPaintedItem(parent)
 {
 }
 
@@ -16,41 +16,18 @@ QVariant OpenCVImage::image() const
 
 void OpenCVImage::setImage(const QVariant &image)
 {
-    image_ = image.value<cv::Mat>();
-    applyGammeCorrection();
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        image_ = image.value<cv::Mat>();
+    }
 
     emit imageChanged();
     emit update();
 }
 
-void OpenCVImage::applyGammeCorrection()
-{
-    // 修正する...
-    if (gamma_ == 1.0 || image_.empty()) {
-        return;
-    }
-
-    std::array<int, 256> lut;
-    for (int i = 0; i < 256; ++i) {
-        lut[i] = i * 2;
-    }
-
-    cv::Mat hsvImage;
-    //cv::cvtColor(image_, hsvImage, CV_BGR2HSV);
-    hsvImage = image_.clone();
-    std::vector<cv::Mat> hsvVec;
-    cv::split(hsvImage, hsvVec);
-    cv::LUT(hsvVec[0], cv::Mat(1, lut.size(), CV_8U, lut.data()), hsvVec[0]);
-    cv::LUT(hsvVec[1], cv::Mat(1, lut.size(), CV_8U, lut.data()), hsvVec[1]);
-
-    cv::merge(hsvVec, hsvImage);
-
-    //cv::cvtColor(hsvImage, image_, CV_HSV2BGR);
-    image_ = hsvImage;
-}
-
 void OpenCVImage::paint(QPainter *painter)
 {
+
     if (image_.empty()) return;
 
     // Scaling to QML Element size
@@ -62,7 +39,10 @@ void OpenCVImage::paint(QPainter *painter)
     }
     */
     cv::Mat scaledImage(height(), width(), image_.type());
-    cv::resize(image_, scaledImage, scaledImage.size(), cv::INTER_CUBIC);
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        cv::resize(image_, scaledImage, scaledImage.size(), cv::INTER_CUBIC);
+    }
 
     // BGR -> ARGB
     cv::cvtColor(scaledImage, scaledImage, CV_BGR2BGRA);

@@ -10,5 +10,6 @@
         <file>qml/Forms/InputSlider.qml</file>
         <file>qml/Views/CalibrationView.qml</file>
         <file>qml/Shapes/Mesh.qml</file>
+        <file>qml/Shapes/LinearMesh.qml</file>
     </qresource>
 </RCC>

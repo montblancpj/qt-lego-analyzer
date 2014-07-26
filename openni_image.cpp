@@ -8,6 +8,8 @@ namespace MontBlanc
  * -------------------------------------------------------------------------------- */
 void IRImageListener::onNewFrame(openni::VideoStream &stream)
 {
+    std::lock_guard<std::mutex> lock(mutex_);
+
     openni::VideoFrameRef frame;
     stream.readFrame(&frame);
 
@@ -26,6 +28,7 @@ void IRImageListener::onNewFrame(openni::VideoStream &stream)
 
 const cv::Mat& IRImageListener::getImage() const
 {
+    std::lock_guard<std::mutex> lock(mutex_);
     return image_;
 }
 

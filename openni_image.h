@@ -3,6 +3,7 @@
 
 #include "opencv_image.h"
 #include <OpenNI.h>
+#include <memory>
 
 namespace MontBlanc
 {
@@ -15,6 +16,7 @@ public:
 private:
     void onNewFrame(openni::VideoStream& stream) override;
     cv::Mat image_;
+    mutable std::mutex mutex_;
 };
 
 class OpenNIImage : public OpenCVImage

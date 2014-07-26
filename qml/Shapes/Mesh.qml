@@ -8,23 +8,23 @@ Item {
     property var   texts       : []
     property var   changes     : []
 
-    onNumXChanged  : meshCanvas.requestPaint();
-    onNumYChanged  : meshCanvas.requestPaint();
-    onTextsChanged : meshCanvas.requestPaint();
+    onNumXChanged  : canvas.requestPaint();
+    onNumYChanged  : canvas.requestPaint();
+    onTextsChanged : canvas.requestPaint();
 
     Canvas {
-        id: meshCanvas
+        id: canvas
         anchors.fill: parent
 
-        renderTarget   : meshCanvas.Image
-        renderStrategy : meshCanvas.Immediate
+        renderTarget   : Canvas.Image
+        renderStrategy : Canvas.Immediate
 
         onPaint: {
-            var context = meshCanvas.getContext('2d');
-            context.clearRect(0, 0, meshCanvas.width, meshCanvas.height);
+            var context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
             var grid = {
-                width  : meshCanvas.width  / numX,
-                height : meshCanvas.height / numY
+                width  : canvas.width  / numX,
+                height : canvas.height / numY
             }
 
             context.strokeStyle   = lineColor;
@@ -40,11 +40,11 @@ Item {
             context.beginPath(); {
                 for (var i = 0; i <= numX; ++i) {
                     context.moveTo(grid.width * i, 0);
-                    context.lineTo(grid.width * i, meshCanvas.height);
+                    context.lineTo(grid.width * i, canvas.height);
                 }
                 for (var i = 0; i <= numY; ++i) {
                     context.moveTo(0, grid.height * i);
-                    context.lineTo(meshCanvas.width, grid.height * i);
+                    context.lineTo(canvas.width, grid.height * i);
                 }
             } context.stroke();
 

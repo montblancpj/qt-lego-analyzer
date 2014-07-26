@@ -82,6 +82,13 @@ ColumnLayout {
                 image: pcsdkDepthImage.image
                 srcPoints: targetArea.points
                 onImageChanged: window.homographyImage = image
+
+                LinearMesh {
+                    anchors.fill: parent
+                    lineColor: '#33ffffff'
+                    numX: 24
+                    numY: 24
+                }
             }
         }
     }

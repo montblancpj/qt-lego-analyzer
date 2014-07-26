@@ -3,6 +3,7 @@
 
 #include "opencv_image.h"
 #include <pcsdk.h>
+#include <memory>
 
 namespace MontBlanc
 {

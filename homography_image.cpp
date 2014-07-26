@@ -50,7 +50,10 @@ void HomographyImage::setImage(const QVariant& image)
     auto homographyMat = cv::findHomography(srcPoints, destPoints);
     cv::warpPerspective(srcImage, destImage, homographyMat, destImage.size());
 
-    image_ = destImage;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        image_ = destImage;
+    }
     emit imageChanged();
     emit update();
 }
