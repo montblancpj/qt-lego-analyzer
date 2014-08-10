@@ -31,10 +31,7 @@ void LevelAnalyzedImage::analyze()
 
     // Check each cell color
     result_.clear();
-    for (auto&& data : targetRects_) {
-        const auto id = data.first;
-        auto rect = data.second;
-
+    for (auto&& rect : targetRects_) {
         // To fill gaps
         rect.width  += 1;
         rect.height += 1;
@@ -42,7 +39,7 @@ void LevelAnalyzedImage::analyze()
         // Check ROI
         if ( !(rect.x >= 0 && rect.width  >= 0 && rect.x + rect.width  <= grayImage.cols &&
                rect.y >= 0 && rect.height >= 0 && rect.y + rect.height <= grayImage.rows) ) {
-            qDebug() << "targetRects[" << id << "] is invalid rect data.";
+            qDebug() << "targetRects contains invalid rect data.";
             continue;
         }
 
@@ -57,12 +54,12 @@ void LevelAnalyzedImage::analyze()
         cv::reduce(averageRoiImage, rowAverage, 0, CV_REDUCE_AVG);
         cv::reduce(rowAverage, average,  1, CV_REDUCE_AVG);
 
-        // Set pixels in ROI as its average color
+        // Set all pixels in ROI as its average color
         auto averageValue = average.at<unsigned char>(0);
-        roiImage = cv::Scalar( averageValue );
+        roiImage = cv::Scalar(averageValue);
 
         // Set results
-        result_[id] = averageValue;
+        result_.push_back(averageValue);
     }
 
     {
@@ -76,7 +73,7 @@ void LevelAnalyzedImage::analyze()
 
 void LevelAnalyzedImage::setTargetRects(const QVariantList& targetRects)
 {
-    // [ { id: 2, x: 0.1, y: 0.1, width: 0.1, height: 0.2 }, ...]
+    // [ { x: 0.1, y: 0.1, width: 0.1, height: 0.2 }, ...]
     targetRects_.clear();
 
     for (auto&& data : targetRects) {
@@ -88,8 +85,7 @@ void LevelAnalyzedImage::setTargetRects(const QVariantList& targetRects)
         rect.width  = static_cast<int>(targetRect["width"].value<double>()  * image_.cols);
         rect.height = static_cast<int>(targetRect["height"].value<double>() * image_.rows);
 
-        const auto id = targetRect["id"].value<int>();
-        targetRects_[id] = rect;
+        targetRects_.push_back(rect);
     }
 
     emit targetRectsChanged();
@@ -100,30 +96,27 @@ QVariantList LevelAnalyzedImage::targetRects() const
     QVariantList targetRects;
 
     for (auto&& rect : targetRects_) {
-        const auto key   = rect.first;
-        const auto value = rect.second;
-
         QVariantMap targetRect;
-        targetRect.insert("id",     key);
-        targetRect.insert("x",      value.x);
-        targetRect.insert("y",      value.y);
-        targetRect.insert("width",  value.width);
-        targetRect.insert("height", value.height);
-
+        targetRect.insert("x",      rect.x);
+        targetRect.insert("y",      rect.y);
+        targetRect.insert("width",  rect.width);
+        targetRect.insert("height", rect.height);
         targetRects.push_back(targetRect);
     }
 
     return targetRects;
 }
 
-QVariantMap LevelAnalyzedImage::result() const
+QVariantList LevelAnalyzedImage::result() const
 {
-    QVariantMap result;
-    for (auto&& idValue : result_) {
-        auto id  = idValue.first;
-        auto val = idValue.second > 100 ? 1 : 0;
-        result.insert(QString::number(id), val);
+    QVariantList result;
+    /*
+    for (auto&& value : result_) {
+        // TODO: make threshold and replace 100 with it.
+        auto detected = value > 100 ? 1 : 0;
+        result.append( QVariant(detected) );
     }
+    */
     return result;
 }
 

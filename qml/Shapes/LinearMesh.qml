@@ -7,7 +7,6 @@ Item {
     property int   numY        : 10
     property real  deltaX      : 1.0 // %
     property real  deltaY      : 0.0 // %
-    property var   colorMap    : []
 
     onNumXChanged   : meshCanvas.requestPaint();
     onNumYChanged   : meshCanvas.requestPaint();
@@ -52,11 +51,6 @@ Item {
                     context.lineTo(rect.x + rect.width, rect.y);
                     context.moveTo(rect.x, rect.y);
                     context.lineTo(rect.x, rect.y + rect.height);
-
-                    if (colorMap[rect.id]) {
-                        context.fillStyle = colorMap[rect.id];
-                        context.fillRect(rect.x, rect.y, rect.width, rect.height)
-                    }
                 });
                 /*
                 for (var i = 1; i <= numX; ++i) {
@@ -87,8 +81,11 @@ Item {
             for (var i = 1, x = 0; i <= numX; ++i) {
                 var width = baseMeshWidth + dw * (i - (numX + 1) / 2);
                 rects.push({
-                    id: id++,
-                    x: x, y: y, width: width, height: height
+                    id     : id++,
+                    x      : x,
+                    y      : y,
+                    width  : width,
+                    height : height
                 });
                 x += width;
             }

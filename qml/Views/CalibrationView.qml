@@ -126,14 +126,6 @@ ColumnLayout {
                 targetRects: targetArea.calcTargetRects()
                 onInputImageChanged: analyze()
                 onResultChanged: {
-                    var colorMap = [];
-                    for (var id in result) {
-                        if (result[id] === 0) continue;
-                        result[id] = "#55ff0000";
-                    }
-                    detectedArea.colorMap = colorMap;
-                    console.log(detectedArea.colorMap.length);
-                    // detectedArea.colorMap = colorMap;
                 }
 
                 LinearMesh {
