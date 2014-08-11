@@ -44,7 +44,7 @@ void HomographyImage::setImage(const QVariant& image)
         0.0,                  destImage.rows - 1.0
     };
 
-    const cv::Mat srcPoints(srcPoints_.length(), 2, CV_64FC1, &srcPointVec[0]);
+    const cv::Mat srcPoints(srcPoints_.length(),  2, CV_64FC1, &srcPointVec[0]);
     const cv::Mat destPoints(srcPoints_.length(), 2, CV_64FC1, destPointArray);
 
     auto homographyMat = cv::findHomography(srcPoints, destPoints);

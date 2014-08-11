@@ -17,8 +17,8 @@ Item {
         id: meshCanvas
         anchors.fill: parent
 
-        renderTarget   : meshCanvas.Image
-        renderStrategy : meshCanvas.Immediate
+        renderTarget   : Canvas.Image
+        renderStrategy : Canvas.Immediate
 
         onPaint: {
             var context = meshCanvas.getContext('2d');

@@ -89,7 +89,7 @@ ColumnLayout {
                             baseY = mouse.y;
                         }
                         onPositionChanged: {
-                            var newWidth  = meshWidthSlider.value + (mouse.x - baseX) / homographyImage.width;
+                            var newWidth  = meshWidthSlider.value  + (mouse.x - baseX) / homographyImage.width;
                             var newHeight = meshHeightSlider.value + (mouse.y - baseY) / homographyImage.height;
                             meshWidthSlider.setValue(newWidth);
                             meshHeightSlider.setValue(newHeight);
@@ -208,6 +208,7 @@ ColumnLayout {
                     label: 'Mesh Num X'
                     min: 1
                     max: 50
+                    fixedLength: 0
                     defaultValue: localStorage.get('calib-numXSlider') || 10
                     onValueChanged: localStorage.set('calib-numXSlider', value)
                 }
@@ -218,6 +219,7 @@ ColumnLayout {
                     label: 'Mesh Num Y'
                     min: 1
                     max: 50
+                    fixedLength: 0
                     defaultValue: localStorage.get('calib-numYSlider') || 10
                     onValueChanged: localStorage.set('calib-numYSlider', value)
                 }

@@ -7,6 +7,7 @@ import '../Common'
 import '../Forms'
 
 ColumnLayout {
+    property string dummyImageFilePath: '/Users/hecomi/Pictures/zzz.png'
     property alias homographyImage: homographyImage.image
 
     Storage {
@@ -41,7 +42,12 @@ ColumnLayout {
                     interval: 1000/60
                     running: true
                     repeat: true
-                    onTriggered: parent.update()
+                    onTriggered: {
+                        if ( !parent.isOpen() ) {
+                            parent.filePath = dummyImageFilePath;
+                        }
+                        parent.update()
+                    }
                 }
 
                 DeformableBox {

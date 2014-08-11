@@ -25,10 +25,31 @@ void OpenCVImage::setImage(const QVariant &image)
     emit update();
 }
 
+QString OpenCVImage::filePath() const
+{
+    return filePath_;
+}
+
+void OpenCVImage::setFilePath(const QString& path)
+{
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        filePath_ = path;
+        image_ = cv::imread( path.toStdString() );
+        if ( image_.empty() ) {
+            emit error(path + "is not found");
+            return;
+        }
+    }
+
+    emit filePathChanged();
+    emit imageChanged();
+}
+
 void OpenCVImage::paint(QPainter *painter)
 {
 
-    if (image_.empty()) return;
+    if ( image_.empty() ) return;
 
     // Scaling to QML Element size
     /*

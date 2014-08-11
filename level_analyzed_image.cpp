@@ -10,7 +10,7 @@ LevelAnalyzedImage::LevelAnalyzedImage(QQuickItem *parent)
 
 void LevelAnalyzedImage::analyze()
 {
-    if (inputImage_.empty()) return;
+    if ( inputImage_.empty() ) return;
 
     cv::Mat grayImage;
     {
@@ -45,10 +45,12 @@ void LevelAnalyzedImage::analyze()
 
         // Calculate average color
         cv::Mat roiImage = grayImage(rect);
-        rect.x += rect.width  / 3;
-        rect.y += rect.height / 3;
-        rect.width  /= 3;
-        rect.height /= 3;
+        if (rect.width > 3 && rect.height > 3) {
+            rect.x += rect.width  / 3;
+            rect.y += rect.height / 3;
+            rect.width  /= 3;
+            rect.height /= 3;
+        }
         cv::Mat averageRoiImage = grayImage(rect);
         cv::Mat rowAverage, average;
         cv::reduce(averageRoiImage, rowAverage, 0, CV_REDUCE_AVG);

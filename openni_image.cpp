@@ -91,7 +91,7 @@ void OpenNIImage::shutdown()
 }
 
 void OpenNIImage::paint(QPainter *painter){
-    if (isOpen()) {
+    if ( isOpen() ) {
         auto image = Listener->getImage();
         cv::cvtColor(image, image_, CV_GRAY2BGR);
         emit imageChanged();
