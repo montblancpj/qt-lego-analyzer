@@ -31,7 +31,7 @@ void LevelAnalyzedImage::analyze()
 
     // Check each cell color
     result_.clear();
-    for (auto&& rect : targetRects_) {
+    for (auto rect : targetRects_) { // copy
         // To fill gaps
         rect.width  += 1;
         rect.height += 1;
