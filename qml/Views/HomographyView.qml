@@ -31,7 +31,7 @@ ColumnLayout {
 
             //PCSDKImage {
             OpenNIImage {
-                id: pcsdkDepthImage
+                id: targetImage
                 anchors.fill: parent
                 //minDistance: minDistanceSlider.value
                 //maxDistance: maxDistanceSlider.value
@@ -79,7 +79,7 @@ ColumnLayout {
             HomographyImage {
                 id: homographyImage
                 anchors.fill: parent
-                image: pcsdkDepthImage.image
+                image: targetImage.image
                 srcPoints: targetArea.points
                 onImageChanged: window.homographyImage = image
 

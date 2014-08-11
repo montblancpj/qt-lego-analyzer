@@ -38,10 +38,10 @@ void HomographyImage::setImage(const QVariant& image)
     }
 
     double destPointArray[] = {
-        0,                  0,
-        destImage.cols - 1, 0,
-        destImage.cols - 1, destImage.rows - 1,
-        0,                  destImage.rows - 1
+        0.0,                  0.0,
+        destImage.cols - 1.0, 0.0,
+        destImage.cols - 1.0, destImage.rows - 1.0,
+        0.0,                  destImage.rows - 1.0
     };
 
     const cv::Mat srcPoints(srcPoints_.length(), 2, CV_64FC1, &srcPointVec[0]);

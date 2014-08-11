@@ -75,7 +75,7 @@ void OpenNIImage::initialize()
 
     Listener = std::make_shared<IRImageListener>();
     Stream = std::make_shared<openni::VideoStream>();
-    Stream->create(*Device, openni::SensorType::SENSOR_IR);
+    Stream->create(*Device, openni::SENSOR_IR);
     Stream->addNewFrameListener(Listener.get());
     Stream->start();
 
