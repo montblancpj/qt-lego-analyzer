@@ -4,15 +4,18 @@
 namespace MontBlanc
 {
 
+
 OpenCVImage::OpenCVImage(QQuickItem *parent) :
     QQuickPaintedItem(parent)
 {
 }
 
+
 QVariant OpenCVImage::image() const
 {
     return QVariant::fromValue(image_);
 }
+
 
 void OpenCVImage::setImage(const QVariant &image)
 {
@@ -25,10 +28,12 @@ void OpenCVImage::setImage(const QVariant &image)
     emit update();
 }
 
+
 QString OpenCVImage::filePath() const
 {
     return filePath_;
 }
+
 
 void OpenCVImage::setFilePath(const QString& path)
 {
@@ -45,6 +50,7 @@ void OpenCVImage::setFilePath(const QString& path)
     emit filePathChanged();
     emit imageChanged();
 }
+
 
 void OpenCVImage::paint(QPainter *painter)
 {
@@ -75,5 +81,6 @@ void OpenCVImage::paint(QPainter *painter)
     QImage outputImage(scaledImage.data, scaledImage.cols, scaledImage.rows, QImage::Format_ARGB32);
     painter->drawImage(0, 0, outputImage);
 }
+
 
 }

@@ -102,7 +102,7 @@ ColumnLayout {
                         var y      = meshYSlider.value;
                         var width  = meshWidthSlider.value;
                         var height = meshHeightSlider.value;
-                        return meshRects.map(function(rect) {
+                        return meshRects.map(function(rect, i) {
                             rect.x = x + rect.x * width;
                             rect.y = y + rect.y * height;
                             rect.width  *= width;
@@ -126,6 +126,10 @@ ColumnLayout {
                 targetRects: targetArea.calcTargetRects()
                 onInputImageChanged: analyze()
                 onResultChanged: {
+                    console.log('Result:', result);
+                }
+                onHeightsChanged: {
+                    console.log('Heights:', heights);
                 }
 
                 LinearMesh {
@@ -139,6 +143,7 @@ ColumnLayout {
                     y: meshYSlider.value * homographyImage.height;
                     width: meshWidthSlider.value * homographyImage.width;
                     height: meshHeightSlider.value * homographyImage.height;
+                    texts: levelAnalyzedImage.heights
                 }
             }
         }
@@ -242,6 +247,17 @@ ColumnLayout {
                     max: 2.0
                     defaultValue: localStorage.get('calib-deltaYSlider') || 0
                     onValueChanged: localStorage.set('calib-deltaYSlider', value)
+                }
+
+                InputSlider {
+                    id:thresholdSlider
+                    width: sliderWidth
+                    label: 'threshold'
+                    min: 0
+                    max: 255
+                    fixedLength: 0
+                    defaultValue: localStorage.get('calib-thresholdSlider') || 128
+                    onValueChanged: localStorage.set('calib-thresholdSlider', value)
                 }
             }
         }

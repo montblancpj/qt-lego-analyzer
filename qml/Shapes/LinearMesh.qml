@@ -3,15 +3,18 @@ import QtQuick 2.0
 Item {
     property color lineColor   : '#eeff0000'
     property color shadowColor : '#00000000'
+    property color textColor   : '#ffff3333'
     property int   numX        : 10
     property int   numY        : 10
     property real  deltaX      : 1.0 // %
     property real  deltaY      : 0.0 // %
+    property var   texts       : []
 
     onNumXChanged   : meshCanvas.requestPaint();
     onNumYChanged   : meshCanvas.requestPaint();
     onDeltaXChanged : meshCanvas.requestPaint();
     onDeltaYChanged : meshCanvas.requestPaint();
+    onTextsChanged  : meshCanvas.requestPaint();
 
     Canvas {
         id: meshCanvas
@@ -28,43 +31,29 @@ Item {
             var baseMeshHeight = meshCanvas.height / numY;
 
             context.strokeStyle = lineColor;
-            /*
-            context.shadowColor   = shadowColor;
-            context.shadowOffsetX = 1;
-            context.shadowOffsetY = 1;
-            context.shadowBlur    = 3;
-            */
-
             context.font          = ((baseMeshWidth > baseMeshHeight) ?
                                          Math.floor(baseMeshHeight/2) : Math.floor(baseMeshWidth/3)) + 'px bold';
+            context.fillStyle     = textColor;
             context.textAlign     = 'center';
             context.textBaseline  = 'middle';
 
             context.beginPath(); {
-                getRects().forEach(function(rect) {
+                getRects().forEach(function(rect, i) {
                     rect.x      *= width;
                     rect.y      *= height;
                     rect.width  *= width;
                     rect.height *= height;
+                    if (texts[i] !== undefined) {
+                        var x = rect.x + rect.width  / 2;
+                        var y = rect.y + rect.height / 2;
+                        context.fillText(texts[i], x, y);
+                    }
 
                     context.moveTo(rect.x, rect.y);
                     context.lineTo(rect.x + rect.width, rect.y);
                     context.moveTo(rect.x, rect.y);
                     context.lineTo(rect.x, rect.y + rect.height);
                 });
-                /*
-                for (var i = 1; i <= numX; ++i) {
-                    context.moveTo(x, 0);
-                    context.lineTo(x, meshCanvas.height);
-                    x += baseMeshWidth + dw * (i - (numX + 1) / 2);
-                }
-
-                for (var j = 1; j <= numY; ++j) {
-                    context.moveTo(0, y);
-                    context.lineTo(meshCanvas.width, y);
-                    y += baseMeshHeight + dh * (j - (numY + 1) / 2);
-                }
-                */
             } context.stroke();
         }
     }

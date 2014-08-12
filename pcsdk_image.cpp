@@ -5,11 +5,13 @@
 namespace MontBlanc
 {
 
+
 PCSDKImage::PCSDKImage(OpenCVImage *parent) :
     OpenCVImage(parent), minDistance_(0), maxDistance_(1000)
 {
     setup();
 }
+
 
 PCSDKImage::~PCSDKImage()
 {
@@ -17,6 +19,7 @@ PCSDKImage::~PCSDKImage()
         pcsdk_->stop();
     }
 }
+
 
 void PCSDKImage::setup()
 {
@@ -78,5 +81,6 @@ void PCSDKImage::paint(QPainter *painter)
     updateDepthImage();
     OpenCVImage::paint(painter);
 }
+
 
 }

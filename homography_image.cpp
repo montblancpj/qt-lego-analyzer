@@ -3,10 +3,12 @@
 namespace MontBlanc
 {
 
+
 HomographyImage::HomographyImage(OpenCVImage *parent) :
     OpenCVImage(parent)
 {
 }
+
 
 void HomographyImage::setImage(const QVariant& image)
 {
@@ -57,5 +59,6 @@ void HomographyImage::setImage(const QVariant& image)
     emit imageChanged();
     emit update();
 }
+
 
 }

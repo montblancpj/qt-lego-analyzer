@@ -3,6 +3,7 @@
 namespace MontBlanc
 {
 
+
 /* --------------------------------------------------------------------------------
  * IRImageListener
  * -------------------------------------------------------------------------------- */
@@ -26,6 +27,7 @@ void IRImageListener::onNewFrame(openni::VideoStream &stream)
     image_ = image;
 }
 
+
 const cv::Mat& IRImageListener::getImage() const
 {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -41,6 +43,7 @@ std::shared_ptr<openni::VideoStream> OpenNIImage::Stream = nullptr;
 int OpenNIImage::instanceNum = 0;
 bool OpenNIImage::IsOpen = false;
 
+
 OpenNIImage::OpenNIImage(OpenCVImage* parent)
     : OpenCVImage(parent)
 {
@@ -50,6 +53,7 @@ OpenNIImage::OpenNIImage(OpenCVImage* parent)
     ++instanceNum;
 }
 
+
 OpenNIImage::~OpenNIImage()
 {
     --instanceNum;
@@ -58,10 +62,12 @@ OpenNIImage::~OpenNIImage()
     }
 }
 
+
 bool OpenNIImage::isOpen() const
 {
     return IsOpen;
 }
+
 
 void OpenNIImage::initialize()
 {
@@ -83,12 +89,14 @@ void OpenNIImage::initialize()
     emit open();
 }
 
+
 void OpenNIImage::shutdown()
 {
     openni::OpenNI::shutdown();
     IsOpen = false;
     emit close();
 }
+
 
 void OpenNIImage::paint(QPainter *painter){
     if ( isOpen() ) {
@@ -98,5 +106,6 @@ void OpenNIImage::paint(QPainter *painter){
     }
     OpenCVImage::paint(painter);
 }
+
 
 }
