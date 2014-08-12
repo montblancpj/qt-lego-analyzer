@@ -2,7 +2,7 @@ import QtQuick 2.1
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 
-RowLayout {
+ColumnLayout {
     property double min   : 0.0
     property double max   : 100.0
     property double value : min + slider.value * (max - min)

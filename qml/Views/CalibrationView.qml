@@ -26,7 +26,7 @@ ColumnLayout {
 
 
         GroupBox {
-            Layout.preferredHeight: parent.height
+            Layout.minimumHeight: parent.height
             Layout.minimumWidth: parent.width / 2
 
             clip: true
@@ -116,7 +116,7 @@ ColumnLayout {
         }
 
         GroupBox {
-            Layout.preferredHeight: parent.height
+            Layout.minimumHeight: parent.height
             Layout.minimumWidth: parent.width / 2
 
             LevelAnalyzedImage {
@@ -126,10 +126,10 @@ ColumnLayout {
                 targetRects: targetArea.calcTargetRects()
                 onInputImageChanged: analyze()
                 onResultChanged: {
-                    console.log('Result:', result);
+                    //console.log('Result:', result);
                 }
                 onHeightsChanged: {
-                    console.log('Heights:', heights);
+                    //console.log('Heights:', heights);
                 }
 
                 LinearMesh {
@@ -144,6 +144,13 @@ ColumnLayout {
                     width: meshWidthSlider.value * homographyImage.width;
                     height: meshHeightSlider.value * homographyImage.height;
                     texts: levelAnalyzedImage.heights
+                    backgrounds: levelAnalyzedImage.result.map(function(change) {
+                        switch (change) {
+                            case 1  : return '#66ff0000';
+                            case -1 : return '#660000ff';
+                        }
+                        return undefined;
+                    })
                 }
             }
         }
@@ -155,7 +162,7 @@ ColumnLayout {
         id: forms
         anchors.top: images.bottom
 
-        Layout.maximumHeight: 65
+        Layout.maximumHeight: 100
         Layout.fillWidth: true
         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
@@ -163,49 +170,6 @@ ColumnLayout {
             anchors.fill: parent
 
             RowLayout {
-                InputSlider {
-                    id: meshXSlider
-                    width: sliderWidth
-                    label: 'Target X'
-                    min: 0.0
-                    max: 1.0
-                    fixedLength: 4
-                    defaultValue: localStorage.get('calib-xSlider') || 0.25
-                    onValueChanged: localStorage.set('calib-xSlider', value)
-                }
-
-                InputSlider {
-                    id: meshYSlider
-                    width: sliderWidth
-                    label: 'TargetY'
-                    min: 0.0
-                    max: 1.0
-                    fixedLength: 4
-                    defaultValue: localStorage.get('calib-ySlider') || 0.25
-                    onValueChanged: localStorage.set('calib-ySlider', value)
-                }
-
-                InputSlider {
-                    id: meshWidthSlider
-                    width: sliderWidth
-                    label: 'Target Width'
-                    min: 0.0
-                    max: 1.0
-                    fixedLength: 4
-                    defaultValue: localStorage.get('calib-widthSlider') || 0.5
-                    onValueChanged: localStorage.set('calib-widthSlider', value)
-                }
-
-                InputSlider {
-                    id: meshHeightSlider
-                    width: sliderWidth
-                    label: 'Target Height'
-                    min: 0.0
-                    max: 1.0
-                    fixedLength: 4
-                    defaultValue: localStorage.get('calib-heightSlider') || 0.5
-                    onValueChanged: localStorage.set('calib-heightSlider', value)
-                }
 
                 InputSlider {
                     id: meshNumXSlider
@@ -259,6 +223,51 @@ ColumnLayout {
                     defaultValue: localStorage.get('calib-thresholdSlider') || 128
                     onValueChanged: localStorage.set('calib-thresholdSlider', value)
                 }
+
+                InputSlider {
+                    id: meshXSlider
+                    width: sliderWidth
+                    label: 'Target X'
+                    min: 0.0
+                    max: 1.0
+                    fixedLength: 4
+                    defaultValue: localStorage.get('calib-xSlider') || 0.25
+                    onValueChanged: localStorage.set('calib-xSlider', value)
+                }
+
+                InputSlider {
+                    id: meshYSlider
+                    width: sliderWidth
+                    label: 'TargetY'
+                    min: 0.0
+                    max: 1.0
+                    fixedLength: 4
+                    defaultValue: localStorage.get('calib-ySlider') || 0.25
+                    onValueChanged: localStorage.set('calib-ySlider', value)
+                }
+
+                InputSlider {
+                    id: meshWidthSlider
+                    width: sliderWidth
+                    label: 'Target Width'
+                    min: 0.0
+                    max: 1.0
+                    fixedLength: 4
+                    defaultValue: localStorage.get('calib-widthSlider') || 0.5
+                    onValueChanged: localStorage.set('calib-widthSlider', value)
+                }
+
+                InputSlider {
+                    id: meshHeightSlider
+                    width: sliderWidth
+                    label: 'Target Height'
+                    min: 0.0
+                    max: 1.0
+                    fixedLength: 4
+                    defaultValue: localStorage.get('calib-heightSlider') || 0.5
+                    onValueChanged: localStorage.set('calib-heightSlider', value)
+                }
+
             }
         }
 

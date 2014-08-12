@@ -11,7 +11,7 @@ Window {
 
     visible: true
     width: 1600
-    height: 640
+    height: 960
 
     SystemPalette { id: syspal }
     color: syspal.window

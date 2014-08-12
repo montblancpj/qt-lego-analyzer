@@ -9,12 +9,14 @@ Item {
     property real  deltaX      : 1.0 // %
     property real  deltaY      : 0.0 // %
     property var   texts       : []
+    property var   backgrounds : []
 
-    onNumXChanged   : meshCanvas.requestPaint();
-    onNumYChanged   : meshCanvas.requestPaint();
-    onDeltaXChanged : meshCanvas.requestPaint();
-    onDeltaYChanged : meshCanvas.requestPaint();
-    onTextsChanged  : meshCanvas.requestPaint();
+    onNumXChanged        : meshCanvas.requestPaint();
+    onNumYChanged        : meshCanvas.requestPaint();
+    onDeltaXChanged      : meshCanvas.requestPaint();
+    onDeltaYChanged      : meshCanvas.requestPaint();
+    onTextsChanged       : meshCanvas.requestPaint();
+    onBackgroundsChanged : meshCanvas.requestPaint();
 
     Canvas {
         id: meshCanvas
@@ -31,9 +33,8 @@ Item {
             var baseMeshHeight = meshCanvas.height / numY;
 
             context.strokeStyle = lineColor;
-            context.font          = ((baseMeshWidth > baseMeshHeight) ?
-                                         Math.floor(baseMeshHeight/2) : Math.floor(baseMeshWidth/3)) + 'px bold';
-            context.fillStyle     = textColor;
+            context.font          = 'bold ' + ((baseMeshWidth > baseMeshHeight) ?
+                                         Math.floor(baseMeshHeight/2) : Math.floor(baseMeshWidth/3)) + 'px Arial';
             context.textAlign     = 'center';
             context.textBaseline  = 'middle';
 
@@ -43,7 +44,14 @@ Item {
                     rect.y      *= height;
                     rect.width  *= width;
                     rect.height *= height;
+
+                    if (backgrounds[i]) {
+                        context.fillStyle = backgrounds[i];
+                        context.fillRect(rect.x, rect.y, rect.width, rect.height);
+                    }
+
                     if (texts[i] !== undefined) {
+                        context.fillStyle     = textColor;
                         var x = rect.x + rect.width  / 2;
                         var y = rect.y + rect.height / 2;
                         context.fillText(texts[i], x, y);

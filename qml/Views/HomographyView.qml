@@ -10,6 +10,9 @@ ColumnLayout {
     property string dummyImageFilePath: '/Users/hecomi/Pictures/zzz.png'
     property alias homographyImage: homographyImage.image
 
+    Layout.preferredWidth: parent.width
+    Layout.preferredHeight: parent.height
+
     Storage {
         id: localStorage
         name: 'LegoAnalyzerV2'
@@ -20,14 +23,12 @@ ColumnLayout {
         id: images
         clip: true
         spacing: 0
-
-        width: parent.width
-        Layout.maximumHeight: parent.height - forms.height
-        Layout.maximumWidth: parent.width
+        Layout.preferredWidth: parent.width
+        Layout.preferredHeight: parent.height - forms.height
 
         GroupBox {
             id: pcsdkDepth
-            Layout.preferredHeight: parent.height
+            Layout.minimumHeight: parent.height
             Layout.minimumWidth: parent.width / 2
 
             //PCSDKImage {
@@ -79,7 +80,7 @@ ColumnLayout {
 
         GroupBox {
             id: homography
-            Layout.preferredHeight: parent.height
+            Layout.minimumHeight: parent.height
             Layout.minimumWidth: parent.width / 2
 
             HomographyImage {
@@ -102,11 +103,12 @@ ColumnLayout {
     GroupBox {
         id: forms
         anchors.top: images.bottom
-
-        Layout.minimumHeight: 40
+        Layout.minimumWidth: parent.width
+        Layout.maximumHeight: 100
         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
         RowLayout {
+            anchors.centerIn: parent
 
             InputSlider {
                 id: minDistanceSlider
