@@ -1,19 +1,21 @@
+INCLUDEPATH += $$PWD
+
 SOURCES += \
-	homography_image.cpp \
-	opencv_image.cpp \
-	openni_image.cpp \
-	level_analyzed_image.cpp
+	$$PWD/homography_image.cpp \
+	$$PWD/opencv_image.cpp \
+	$$PWD/openni_image.cpp \
+	$$PWD/level_analyzed_image.cpp
 
 HEADERS += \
-	homography_image.h \
-	opencv_image.h \
-	openni_image.h \
-	level_analyzed_image.h
+	$$PWD/homography_image.h \
+	$$PWD/opencv_image.h \
+	$$PWD/openni_image.h \
+	$$PWD/level_analyzed_image.h
 
 win32 {
 
-	SOURCES += pcsdk_image.cpp
-	HEADERS += pcsdk_image.h
+	SOURCES += $$PWD/pcsdk_image.cpp
+	HEADERS += $$PWD/pcsdk_image.h
 
 	QMAKE_INCDIR += \
 		$$PWD/include \
@@ -45,11 +47,7 @@ win32 {
 
 	QMAKE_LIBS += \
 		-lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_calib3d -lOpenNI2
-
-	QMAKE_CFLAGS += -stdlib=libstdc++
-	QMAKE_CFLAGS_WARN_OFF += -Woverloaded-virtual
-
 }
 
-OTHER_FILES = qmldir
+QMAKE_CXXFLAGS_WARN_OFF += -Wno-overloaded-virtual
 

@@ -12,7 +12,8 @@ RESOURCES += qml.qrc
 
 QML_IMPORT_PATH =
 
-include(./Images.pri)
+include(./images/images.pri)
+include(./osc/osc.pri)
 
 OTHER_FILES +=
 
