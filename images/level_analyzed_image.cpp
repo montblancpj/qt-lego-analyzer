@@ -27,7 +27,7 @@ void LevelAnalyzedImage::analyze()
     // Contrast collection
     cv::Mat lut(1, 256, CV_8U);
     for (int i = 0; i < 256; ++i) {
-        lut.at<unsigned char>(i) = (i < 128) ? (std::pow(i, 2) / 128) : (256 - std::pow(i, 2) / std::pow(256, 2));
+        lut.at<unsigned char>(i) = (i < threshold_) ? (std::pow(i, 2) / threshold_) : (256 - std::pow(i, 2) / std::pow(256, 2));
         // lut.at<unsigned char>(i) = 255 / (1 + std::exp(-contrast_ * (i - 128) / 255));
     }
     cv::LUT(grayImage, lut, grayImage);
