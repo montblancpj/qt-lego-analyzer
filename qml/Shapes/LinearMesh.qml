@@ -11,12 +11,16 @@ Item {
     property var   texts       : []
     property var   backgrounds : []
 
-    onNumXChanged        : meshCanvas.requestPaint();
-    onNumYChanged        : meshCanvas.requestPaint();
-    onDeltaXChanged      : meshCanvas.requestPaint();
-    onDeltaYChanged      : meshCanvas.requestPaint();
-    onTextsChanged       : meshCanvas.requestPaint();
-    onBackgroundsChanged : meshCanvas.requestPaint();
+    onNumXChanged        : repaint()
+    onNumYChanged        : repaint()
+    onDeltaXChanged      : repaint()
+    onDeltaYChanged      : repaint()
+    onTextsChanged       : repaint()
+    onBackgroundsChanged : repaint()
+
+    function repaint() {
+        meshCanvas.requestPaint();
+    }
 
     Canvas {
         id: meshCanvas
@@ -45,7 +49,7 @@ Item {
                     rect.width  *= width;
                     rect.height *= height;
 
-                    if (backgrounds[i]) {
+                    if (backgrounds[i] !== undefined) {
                         context.fillStyle = backgrounds[i];
                         context.fillRect(rect.x, rect.y, rect.width, rect.height);
                     }
@@ -90,5 +94,17 @@ Item {
         }
 
         return rects;
+    }
+
+    function getRectIndexFromPoint(x, y) {
+        var rects = getRects();
+        for (var i = 0; i < rects.length; ++i) {
+            var rect = rects[i];
+            if (x >= rect.x && x < rect.x + rect.width &&
+                y >= rect.y && y < rect.y + rect.height) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

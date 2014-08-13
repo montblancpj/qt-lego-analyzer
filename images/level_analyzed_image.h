@@ -27,6 +27,7 @@ private:
     cv::Mat inputImage_;
     std::mutex inputImageMutex_;
     std::vector<cv::Rect> targetRects_;
+    std::vector<bool> ignoreRectMap_;
     std::vector<int> result_;
     std::vector<int> lastHeights_;
     std::deque<std::vector<int>> heightsCache_;

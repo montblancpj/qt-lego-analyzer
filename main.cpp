@@ -4,6 +4,8 @@
 #include "homography_image.h"
 #include "openni_image.h"
 #include "level_analyzed_image.h"
+#include "osc_sender.h"
+#include "osc_receiver.h"
 
 #if defined _WIN32 || defined _WIN64
 #include "pcsdk_image.h"
@@ -21,6 +23,9 @@ int main(int argc, char *argv[])
 #if defined _WIN32 || defined _WIN64
     qmlRegisterType<MontBlanc::PCSDKImage>("MontBlanc", 1, 0, "PCSDKImage");
 #endif
+
+    qmlRegisterType<OSCSender>("OSC", 1, 0, "OSCSender");
+    qmlRegisterType<OSCReceiver>("OSC", 1, 0, "OSCReceiver");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:///qml/main.qml")));

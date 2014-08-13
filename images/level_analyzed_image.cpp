@@ -85,17 +85,20 @@ void LevelAnalyzedImage::setTargetRects(const QVariantList& targetRects)
 {
     // [ { x: 0.1, y: 0.1, width: 0.1, height: 0.2 }, ...]
     targetRects_.clear();
+    ignoreRectMap_.clear();
 
     for (auto&& data : targetRects) {
         const auto targetRect = data.value<QVariantMap>();
 
         cv::Rect rect;
-        rect.x      = static_cast<int>(targetRect["x"].value<double>()      * image_.cols);
-        rect.y      = static_cast<int>(targetRect["y"].value<double>()      * image_.rows);
-        rect.width  = static_cast<int>(targetRect["width"].value<double>()  * image_.cols);
-        rect.height = static_cast<int>(targetRect["height"].value<double>() * image_.rows);
+        rect.x       = static_cast<int>(targetRect["x"].value<double>()      * image_.cols);
+        rect.y       = static_cast<int>(targetRect["y"].value<double>()      * image_.rows);
+        rect.width   = static_cast<int>(targetRect["width"].value<double>()  * image_.cols);
+        rect.height  = static_cast<int>(targetRect["height"].value<double>() * image_.rows);
+        bool ignored = targetRect["isIgnored"].value<int>() > 0;
 
         targetRects_.push_back(rect);
+        ignoreRectMap_.push_back(ignored);
     }
 
     emit targetRectsChanged();
@@ -158,7 +161,7 @@ QVariant LevelAnalyzedImage::inputImage() const
 void LevelAnalyzedImage::addHeightsCache(const std::vector<int> &heights)
 {
     heightsCache_.push_front(heights);
-    if (heightsCache_.size() > checkFrame_) {
+    while (heightsCache_.size() > checkFrame_) {
         heightsCache_.pop_back();
     }
 }
@@ -178,7 +181,9 @@ void LevelAnalyzedImage::checkResult()
     bool isSteady = true;
     for (int i = 1; i < heightsCache_.size(); ++i) {
         for (int j = 0; j < heightsCache_[i].size() && j < heightsCache_[i-1].size(); ++j) {
-            if (heightsCache_[i][j] != heightsCache_[i-1][j]) {
+            bool changed = heightsCache_[i][j] != heightsCache_[i-1][j];
+            bool ignored = ignoreRectMap_[j];
+            if (changed && !ignored) {
                 isSteady = false;
                 break;
             }

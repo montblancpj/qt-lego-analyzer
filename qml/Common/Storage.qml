@@ -1,9 +1,6 @@
 import QtQuick 2.1
 import QtQuick.LocalStorage 2.0
 
-import QtQuick 2.1
-import QtQuick.LocalStorage 2.0
-
 QtObject {
     property string name        : 'UnnamedDB'
     property string version     : '1.0'

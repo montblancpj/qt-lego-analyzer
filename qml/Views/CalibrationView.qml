@@ -15,6 +15,12 @@ ColumnLayout {
         description: 'Lego Analyzer v2 Settings'
     }
 
+    Osc {
+        id: osc
+        ip: '127.0.0.1'
+        port: 4567
+    }
+
     RowLayout {
         id: images
         clip: true
@@ -52,6 +58,8 @@ ColumnLayout {
                     y: meshYSlider.value * homographyImage.height;
                     width: meshWidthSlider.value * homographyImage.width;
                     height: meshHeightSlider.value * homographyImage.height;
+                    property var ignoreRectMap: []
+                    property color ignoreGridColor: '#8800ff00'
 
                     Rectangle {
                         border.color: targetArea.lineColor
@@ -66,9 +74,20 @@ ColumnLayout {
                         drag.target: targetArea
                         drag.axis: Drag.XAndYAxis
                         cursorShape: Qt.PointingHandCursor
+                        propagateComposedEvents: true
                         property int deltaX: 0
                         property int deltaY: 0
                         property int deltaMax: 20
+                        onDoubleClicked: {
+                            var x = mouseX / targetArea.width;
+                            var y = mouseY / targetArea.height;
+                            var index = targetArea.getRectIndexFromPoint(x, y);
+                            targetArea.ignoreRectMap[index] ^= 1; // undefined or 0 -> 1, 1 -> 0
+                            targetArea.backgrounds[index] = detectedArea.backgrounds[index] =
+                                    targetArea.ignoreRectMap[index] ? targetArea.ignoreGridColor: undefined;
+                            targetArea.repaint();
+                            detectedArea.repaint();
+                        }
                         onPositionChanged: {
                             meshXSlider.setValue(targetArea.x / homographyImage.width);
                             meshYSlider.setValue(targetArea.y / homographyImage.height);
@@ -107,6 +126,7 @@ ColumnLayout {
                             rect.y = y + rect.y * height;
                             rect.width  *= width;
                             rect.height *= height;
+                            rect.isIgnored = targetArea.ignoreRectMap[i];
                             return rect;
                         });
                     }
@@ -124,9 +144,21 @@ ColumnLayout {
                 anchors.fill: parent
                 inputImage: homographyImage.image
                 targetRects: targetArea.calcTargetRects()
+                checkFrame: checkFrameSlider.value
+                threshold: thresholdSlider.value
                 onInputImageChanged: analyze()
                 onResultChanged: {
-                    //console.log('Result:', result);
+                    result.forEach(function(change, index) {
+                        if (change !== 0) {
+                            var y = Math.floor(index / meshNumYSlider.value);
+                            var x = index - y * meshNumYSlider.value;
+                            switch (change) {
+                                case  1 : osc.register('/LegoAnalyzer/AddBlock',    x, y); break;
+                                case -1 : osc.register('/LegoAnalyzer/DeleteBlock', x, y); break;
+                                default : console.warn('not implemented:', change); break;
+                            }
+                        }
+                    });
                 }
                 onHeightsChanged: {
                     //console.log('Heights:', heights);
@@ -144,7 +176,10 @@ ColumnLayout {
                     width: meshWidthSlider.value * homographyImage.width;
                     height: meshHeightSlider.value * homographyImage.height;
                     texts: levelAnalyzedImage.heights
-                    backgrounds: levelAnalyzedImage.result.map(function(change) {
+                    backgrounds: levelAnalyzedImage.result.map(function(change, i) {
+                        if (targetArea.ignoreRectMap[i]) {
+                            return targetArea.ignoreGridColor;
+                        }
                         switch (change) {
                             case 1  : return '#66ff0000';
                             case -1 : return '#660000ff';
@@ -214,7 +249,18 @@ ColumnLayout {
                 }
 
                 InputSlider {
-                    id:thresholdSlider
+                    id: checkFrameSlider
+                    width: sliderWidth
+                    label: 'check frame'
+                    min: 10
+                    max: 300
+                    fixedLength: 0
+                    defaultValue: localStorage.get('calib-checkFrameSlider') || 30
+                    onValueChanged: localStorage.set('calib-checkFrameSlider', value)
+                }
+
+                InputSlider {
+                    id: thresholdSlider
                     width: sliderWidth
                     label: 'threshold'
                     min: 0
