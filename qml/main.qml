@@ -47,5 +47,18 @@ Window {
                 anchors.fill: parent
             }
         }
+
+        /*
+        Tab {
+            id: colorImageTab
+            title: "Color Image"
+            anchors.margins: 4
+
+            ColorImageView {
+                id: colorImageView
+                anchors.fill: parent
+            }
+        }
+        */
     }
 }

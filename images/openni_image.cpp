@@ -15,7 +15,7 @@ void IRImageListener::onNewFrame(openni::VideoStream &stream)
     stream.readFrame(&frame);
 
     if (!frame.isValid()) {
-        qDebug() << "Frame is invalid.";
+        qDebug() << "IR frame is invalid.";
         return;
     }
 
@@ -34,18 +34,51 @@ const cv::Mat& IRImageListener::getImage() const
     return image_;
 }
 
+
+/* --------------------------------------------------------------------------------
+ * ColorImageListener
+ * -------------------------------------------------------------------------------- */
+void ColorImageListener::onNewFrame(openni::VideoStream &stream)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    openni::VideoFrameRef frame;
+    stream.readFrame(&frame);
+
+    if (!frame.isValid()) {
+        qDebug() << "Color frame is invalid.";
+        return;
+    }
+
+    cv::Mat image(frame.getHeight(), frame.getWidth(),
+                  CV_8UC3, static_cast<char*>( const_cast<void*>(frame.getData())) );
+    cv::flip(image, image, 1);
+
+    image_ = image;
+}
+
+
+const cv::Mat& ColorImageListener::getImage() const
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    return image_;
+}
+
+
 /* --------------------------------------------------------------------------------
  * OpenNIImage
  * -------------------------------------------------------------------------------- */
-std::shared_ptr<IRImageListener> OpenNIImage::Listener = nullptr;
-std::shared_ptr<openni::Device> OpenNIImage::Device = nullptr;
-std::shared_ptr<openni::VideoStream> OpenNIImage::Stream = nullptr;
-int OpenNIImage::instanceNum = 0;
-bool OpenNIImage::IsOpen = false;
+std::shared_ptr<openni::Device>      OpenNIImage::Device        = nullptr;
+std::shared_ptr<IRImageListener>     OpenNIImage::IrListener    = nullptr;
+std::shared_ptr<openni::VideoStream> OpenNIImage::IrStream      = nullptr;
+std::shared_ptr<ColorImageListener>  OpenNIImage::ColorListener = nullptr;
+std::shared_ptr<openni::VideoStream> OpenNIImage::ColorStream   = nullptr;
+int  OpenNIImage::instanceNum = 0;
+bool OpenNIImage::IsOpen      = false;
 
 
 OpenNIImage::OpenNIImage(OpenCVImage* parent)
-    : OpenCVImage(parent)
+    : OpenCVImage(parent), isColor_(false)
 {
     if (instanceNum == 0) {
         initialize();
@@ -79,11 +112,26 @@ void OpenNIImage::initialize()
         return;
     }
 
-    Listener = std::make_shared<IRImageListener>();
-    Stream = std::make_shared<openni::VideoStream>();
-    Stream->create(*Device, openni::SENSOR_IR);
-    Stream->addNewFrameListener(Listener.get());
-    Stream->start();
+    IrListener = std::make_shared<IRImageListener>();
+    IrStream = std::make_shared<openni::VideoStream>();
+    IrStream->create(*Device, openni::SENSOR_IR);
+    IrStream->addNewFrameListener(IrListener.get());
+    auto irMode = IrStream->getVideoMode();
+    irMode.setResolution(640, 480);
+    irMode.setFps(30);
+    IrStream->setVideoMode(irMode);
+    IrStream->start();
+
+    // Color Streams DOES NOT work with IR cam. ...x(
+    ColorListener = std::make_shared<ColorImageListener>();
+    ColorStream = std::make_shared<openni::VideoStream>();
+    ColorStream->create(*Device, openni::SENSOR_COLOR);
+    ColorStream->addNewFrameListener(ColorListener.get());
+    auto colorMode = IrStream->getVideoMode();
+    colorMode.setResolution(640, 480);
+    colorMode.setFps(30);
+    ColorStream->setVideoMode(colorMode);
+    ColorStream->start();
 
     IsOpen = true;
     emit open();
@@ -100,9 +148,14 @@ void OpenNIImage::shutdown()
 
 void OpenNIImage::paint(QPainter *painter){
     if ( isOpen() ) {
-        auto image = Listener->getImage();
-        cv::cvtColor(image, image_, CV_GRAY2BGR);
-        emit imageChanged();
+        if (!isColor_) {
+            auto image = IrListener->getImage();
+            cv::cvtColor(image, image_, CV_GRAY2BGR);
+            emit imageChanged();
+        } else { // color stream does not work...
+            image_ = ColorListener->getImage();
+            emit imageChanged();
+        }
     }
     OpenCVImage::paint(painter);
 }
