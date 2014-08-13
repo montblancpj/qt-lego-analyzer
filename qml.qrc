@@ -12,5 +12,6 @@
         <file>qml/Shapes/Mesh.qml</file>
         <file>qml/Shapes/LinearMesh.qml</file>
         <file>qml/Common/Osc.qml</file>
+        <file>qml/Common/Fps.qml</file>
     </qresource>
 </RCC>

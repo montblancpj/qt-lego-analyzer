@@ -39,15 +39,24 @@ ColumnLayout {
                 //maxDistance: maxDistanceSlider.value
                 //gamma: gammaSlider.value
 
+                Fps {
+                    id: targetImageFpsCounter
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.margins: 5
+                }
+
                 Timer {
-                    interval: 1000/60
+                    property int fps: 30
+                    interval: 1000 / fps
                     running: true
-                    repeat: true
+                    repeat: false
                     onTriggered: {
                         if ( !parent.isOpen() ) {
                             parent.filePath = dummyImageFilePath;
                         }
-                        parent.update()
+                        parent.update();
+                        running = true;
                     }
                 }
 
@@ -75,6 +84,8 @@ ColumnLayout {
                     onLeftBottomXChanged: localStorage.set('homo-leftBottomX', leftBottomX)
                     onLeftBottomYChanged: localStorage.set('homo-leftBottomY', leftBottomY)
                 }
+
+                onImageChanged: targetImageFpsCounter.update()
             }
         }
 
@@ -88,7 +99,17 @@ ColumnLayout {
                 anchors.fill: parent
                 image: targetImage.image
                 srcPoints: targetArea.points
-                onImageChanged: window.homographyImage = image
+                onImageChanged: {
+                    window.homographyImage = image;
+                    homographyImageFpsCounter.update();
+                }
+
+                Fps {
+                    id: homographyImageFpsCounter
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.margins: 5
+                }
 
                 LinearMesh {
                     anchors.fill: parent

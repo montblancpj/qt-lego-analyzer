@@ -41,6 +41,15 @@ ColumnLayout {
                 id: homographyImage;
                 anchors.fill: parent
                 image: window.homographyImage
+
+                Fps {
+                    id: homographyImageFpsCounter
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.margins: 5
+                }
+
+                onImageChanged: homographyImageFpsCounter.update()
             }
 
             Rectangle {
@@ -147,6 +156,7 @@ ColumnLayout {
                 checkFrame: checkFrameSlider.value
                 threshold: thresholdSlider.value
                 onInputImageChanged: analyze()
+
                 onResultChanged: {
                     result.forEach(function(change, index) {
                         if (change !== 0) {
@@ -160,6 +170,7 @@ ColumnLayout {
                         }
                     });
                 }
+
                 onHeightsChanged: {
                     //console.log('Heights:', heights);
                 }
@@ -187,6 +198,15 @@ ColumnLayout {
                         return undefined;
                     })
                 }
+
+                Fps {
+                    id: levelAnalyzedImageFpsCounter
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.margins: 5
+                }
+
+                onImageChanged: levelAnalyzedImageFpsCounter.update()
             }
         }
     }

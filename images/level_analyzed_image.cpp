@@ -75,6 +75,7 @@ void LevelAnalyzedImage::analyze()
     {
         std::lock_guard<std::mutex> lock(mutex_);
         cv::cvtColor(grayImage, image_, CV_GRAY2BGR);
+        emit imageChanged();
     }
 
     emit update();
