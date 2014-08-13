@@ -13,6 +13,7 @@ class LevelAnalyzedImage : public OpenCVImage
 
     Q_PROPERTY(QVariantList targetRects READ targetRects WRITE setTargetRects NOTIFY targetRectsChanged)
     Q_PROPERTY(QVariantList result READ result NOTIFY resultChanged)
+    Q_PROPERTY(QVariantList lastHeights READ lastHeights NOTIFY lastHeightsChanged)
     Q_PROPERTY(QVariantList heights READ heights NOTIFY heightsChanged)
     Q_PROPERTY(QVariant inputImage READ inputImage WRITE setInputImage NOTIFY inputImageChanged)
     Q_PROPERTY(double contrast MEMBER contrast_)
@@ -29,7 +30,7 @@ private:
     std::vector<cv::Rect> targetRects_;
     std::vector<bool> ignoreRectMap_;
     std::vector<int> result_;
-    std::vector<int> lastHeights_;
+    std::vector<int> heights_, lastHeights_;
     std::deque<std::vector<int>> heightsCache_;
 
     double threshold_;
@@ -41,6 +42,7 @@ private:
 
     QVariantList result() const; // readonly
     QVariantList heights() const; // readonly
+    QVariantList lastHeights() const; // readonly
 
     void setInputImage(const QVariant& image);
     QVariant inputImage() const;
@@ -52,6 +54,7 @@ signals:
     void targetRectsChanged() const;
     void resultChanged() const;
     void heightsChanged() const;
+    void lastHeightsChanged() const;
     void inputImageChanged() const;
 };
 

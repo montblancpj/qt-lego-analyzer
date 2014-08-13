@@ -136,10 +136,20 @@ QVariantList LevelAnalyzedImage::result() const
 QVariantList LevelAnalyzedImage::heights() const
 {
     QVariantList heights;
-    for (auto&& value : lastHeights_) {
+    for (auto&& value : heights_) {
         heights.append( QVariant(value) );
     }
     return heights;
+}
+
+
+QVariantList LevelAnalyzedImage::lastHeights() const
+{
+    QVariantList lastHeights;
+    for (auto&& value : lastHeights_) {
+        lastHeights.append( QVariant(value) );
+    }
+    return lastHeights;
 }
 
 
@@ -165,6 +175,8 @@ void LevelAnalyzedImage::addHeightsCache(const std::vector<int> &heights)
     while (heightsCache_.size() > checkFrame_) {
         heightsCache_.pop_back();
     }
+    heights_ = heights;
+    emit heightsChanged();
 }
 
 
@@ -208,7 +220,7 @@ void LevelAnalyzedImage::checkResult()
             lastHeights_ = currentHeights;
             result_ = newResult;
             emit resultChanged();
-            emit heightsChanged();
+            emit lastHeightsChanged();
         }
     }
 }
