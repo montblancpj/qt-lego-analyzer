@@ -67,14 +67,26 @@ ColumnLayout {
                     y: meshYSlider.value * homographyImage.height;
                     width: meshWidthSlider.value * homographyImage.width;
                     height: meshHeightSlider.value * homographyImage.height;
-                    property var ignoreRectMap: []
                     property color ignoreGridColor: '#8800ff00'
+                    property var ignoreRectMap: JSON.parse(localStorage.get('ignoreRectMap') || '[]')
+                    backgrounds: levelAnalyzedImage.result.map(function(change, i) {
+                        if (targetArea.ignoreRectMap[i]) {
+                            return targetArea.ignoreGridColor;
+                        }
+                        return undefined;
+                    })
 
                     Rectangle {
                         border.color: targetArea.lineColor
                         border.width: 2
                         anchors.fill: parent
                         color: '#00000000'
+                    }
+
+                    Timer {
+                        running: true
+                        interval: 100
+                        repeat: true
                     }
 
                     MouseArea {
@@ -96,6 +108,7 @@ ColumnLayout {
                                     targetArea.ignoreRectMap[index] ? targetArea.ignoreGridColor: undefined;
                             targetArea.repaint();
                             detectedArea.repaint();
+                            localStorage.set('ignoreRectMap', JSON.stringify(targetArea.ignoreRectMap))
                         }
                         onPositionChanged: {
                             meshXSlider.setValue(targetArea.x / homographyImage.width);
