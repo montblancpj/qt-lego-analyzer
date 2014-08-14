@@ -99,21 +99,22 @@ ColumnLayout {
                         property int deltaX: 0
                         property int deltaY: 0
                         property int deltaMax: 20
-                        onDoubleClicked: {
-                            var x = mouseX / targetArea.width;
-                            var y = mouseY / targetArea.height;
-                            var index = targetArea.getRectIndexFromPoint(x, y);
-                            targetArea.ignoreRectMap[index] ^= 1; // undefined or 0 -> 1, 1 -> 0
-                            targetArea.backgrounds[index] = detectedArea.backgrounds[index] =
-                                    targetArea.ignoreRectMap[index] ? targetArea.ignoreGridColor: undefined;
-                            targetArea.repaint();
-                            detectedArea.repaint();
-                            localStorage.set('ignoreRectMap', JSON.stringify(targetArea.ignoreRectMap))
-                        }
+                        onDoubleClicked: targetArea.toggleIgnoreMap(mouseX, mouseY)
                         onPositionChanged: {
                             meshXSlider.setValue(targetArea.x / homographyImage.width);
                             meshYSlider.setValue(targetArea.y / homographyImage.height);
                         }
+                    }
+
+                    function toggleIgnoreMap(mouseX, mouseY) {
+                        var x = mouseX / width;
+                        var y = mouseY / height;
+                        var index = getRectIndexFromPoint(x, y);
+                        ignoreRectMap[index] ^= 1; // undefined or 0 -> 1, 1 -> 0
+                        backgrounds[index] = detectedArea.backgrounds[index] = ignoreRectMap[index] ? ignoreGridColor: undefined;
+                        repaint();
+                        detectedArea.repaint();
+                        localStorage.set('ignoreRectMap', JSON.stringify(ignoreRectMap))
                     }
 
                     MouseArea {
@@ -212,6 +213,11 @@ ColumnLayout {
                         }
                         return undefined;
                     })
+                    MouseArea {
+                        anchors.fill: parent
+                        onDoubleClicked: targetArea.toggleIgnoreMap(mouseX, mouseY)
+                    }
+
                 }
 
                 Fps {

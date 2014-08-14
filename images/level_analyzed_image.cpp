@@ -213,6 +213,7 @@ void LevelAnalyzedImage::checkResult()
         bool isResultChanged = false;
         for (int i = 0; i < currentHeights.size() && i < lastHeights_.size(); ++i) {
             auto deltaHeight = currentHeights[i] - lastHeights_[i];
+            if (ignoreRectMap_[i]) deltaHeight = 0;
             if (deltaHeight != 0) isResultChanged = true;
             newResult[i] = deltaHeight;
         }
