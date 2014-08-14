@@ -3,7 +3,7 @@ import OSC 1.0
 
 OSCSender {
     id: sender
-    property int  fps: 30
+    property int  fps: 5
     property bool isOutputLog: false
 
     Timer {
