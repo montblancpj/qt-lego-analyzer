@@ -47,7 +47,7 @@ ColumnLayout {
                 }
 
                 Timer {
-                    property int fps: 30
+                    property int fps: 60
                     interval: 1000 / fps
                     running: true
                     repeat: false

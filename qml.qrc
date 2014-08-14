@@ -14,5 +14,6 @@
         <file>qml/Common/Osc.qml</file>
         <file>qml/Common/Fps.qml</file>
         <file>qml/Views/ColorImageView.qml</file>
+        <file>qml/Forms/LabeledSwitch.qml</file>
     </qresource>
 </RCC>

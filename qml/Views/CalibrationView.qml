@@ -158,17 +158,19 @@ ColumnLayout {
                 onInputImageChanged: analyze()
 
                 onResultChanged: {
-                    result.forEach(function(change, index) {
-                        if (change !== 0) {
-                            var y = Math.floor(index / meshNumYSlider.value);
-                            var x = index - y * meshNumYSlider.value;
-                            switch (change) {
-                                case  1 : osc.register('/LegoAnalyzer/AddBlock',    x, y); break;
-                                case -1 : osc.register('/LegoAnalyzer/DeleteBlock', x, y); break;
-                                default : console.warn('not implemented:', change); break;
+                    if (oscSendSwitch.on) {
+                        result.forEach(function(change, index) {
+                            if (change !== 0) {
+                                var y = Math.floor(index / meshNumYSlider.value);
+                                var x = index - y * meshNumYSlider.value;
+                                switch (change) {
+                                    case  1 : osc.register('/LegoAnalyzer/AddBlock',    x, y); break;
+                                    case -1 : osc.register('/LegoAnalyzer/DeleteBlock', x, y); break;
+                                    default : console.warn('not implemented:', change); break;
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
 
                 onHeightsChanged: {
@@ -226,114 +228,129 @@ ColumnLayout {
 
             RowLayout {
 
-                InputSlider {
-                    id: meshNumXSlider
-                    width: sliderWidth
-                    label: 'Mesh Num X'
-                    min: 1
-                    max: 50
-                    fixedLength: 0
-                    defaultValue: localStorage.get('calib-numXSlider') || 10
-                    onValueChanged: localStorage.set('calib-numXSlider', value)
+                GroupBox {
+                    id: switches
+                    Layout.minimumWidth: 100
+                    Layout.minimumHeight: sliders.height
+                    LabeledSwitch {
+                        id: oscSendSwitch
+                        switchWidth: 50
+                        label: "OSC on/off"
+                    }
                 }
 
-                InputSlider {
-                    id: meshNumYSlider
-                    width: sliderWidth
-                    label: 'Mesh Num Y'
-                    min: 1
-                    max: 50
-                    fixedLength: 0
-                    defaultValue: localStorage.get('calib-numYSlider') || 10
-                    onValueChanged: localStorage.set('calib-numYSlider', value)
-                }
+                GroupBox {
+                    id: sliders
+                    RowLayout {
+                        InputSlider {
+                            id: meshNumXSlider
+                            width: sliderWidth
+                            label: 'Mesh Num X'
+                            min: 1
+                            max: 50
+                            fixedLength: 0
+                            defaultValue: localStorage.get('calib-numXSlider') || 10
+                            onValueChanged: localStorage.set('calib-numXSlider', value)
+                        }
 
-                InputSlider {
-                    id: meshDeltaXSlider
-                    width: sliderWidth
-                    label: 'delta X'
-                    min: -2.0
-                    max: 2.0
-                    defaultValue: localStorage.get('calib-deltaXSlider') || 0
-                    onValueChanged: localStorage.set('calib-deltaXSlider', value)
-                }
+                        InputSlider {
+                            id: meshNumYSlider
+                            width: sliderWidth
+                            label: 'Mesh Num Y'
+                            min: 1
+                            max: 50
+                            fixedLength: 0
+                            defaultValue: localStorage.get('calib-numYSlider') || 10
+                            onValueChanged: localStorage.set('calib-numYSlider', value)
+                        }
 
-                InputSlider {
-                    id: meshDeltaYSlider
-                    width: sliderWidth
-                    label: 'delta Y'
-                    min: -2.0
-                    max: 2.0
-                    defaultValue: localStorage.get('calib-deltaYSlider') || 0
-                    onValueChanged: localStorage.set('calib-deltaYSlider', value)
-                }
+                        InputSlider {
+                            id: meshDeltaXSlider
+                            width: sliderWidth
+                            label: 'delta X'
+                            min: -2.0
+                            max: 2.0
+                            defaultValue: localStorage.get('calib-deltaXSlider') || 0
+                            onValueChanged: localStorage.set('calib-deltaXSlider', value)
+                        }
 
-                InputSlider {
-                    id: checkFrameSlider
-                    width: sliderWidth
-                    label: 'check frame'
-                    min: 10
-                    max: 300
-                    fixedLength: 0
-                    defaultValue: localStorage.get('calib-checkFrameSlider') || 30
-                    onValueChanged: localStorage.set('calib-checkFrameSlider', value)
-                }
+                        InputSlider {
+                            id: meshDeltaYSlider
+                            width: sliderWidth
+                            label: 'delta Y'
+                            min: -2.0
+                            max: 2.0
+                            defaultValue: localStorage.get('calib-deltaYSlider') || 0
+                            onValueChanged: localStorage.set('calib-deltaYSlider', value)
+                        }
 
-                InputSlider {
-                    id: thresholdSlider
-                    width: sliderWidth
-                    label: 'threshold'
-                    min: 0
-                    max: 255
-                    fixedLength: 0
-                    defaultValue: localStorage.get('calib-thresholdSlider') || 128
-                    onValueChanged: localStorage.set('calib-thresholdSlider', value)
-                }
+                        InputSlider {
+                            id: checkFrameSlider
+                            width: sliderWidth
+                            label: 'check frame'
+                            min: 10
+                            max: 300
+                            fixedLength: 0
+                            defaultValue: localStorage.get('calib-checkFrameSlider') || 30
+                            onValueChanged: localStorage.set('calib-checkFrameSlider', value)
+                        }
 
-                InputSlider {
-                    id: meshXSlider
-                    width: sliderWidth
-                    label: 'Target X'
-                    min: 0.0
-                    max: 1.0
-                    fixedLength: 4
-                    defaultValue: localStorage.get('calib-xSlider') || 0.25
-                    onValueChanged: localStorage.set('calib-xSlider', value)
-                }
+                        InputSlider {
+                            id: thresholdSlider
+                            width: sliderWidth
+                            label: 'threshold'
+                            min: 0
+                            max: 255
+                            fixedLength: 0
+                            defaultValue: localStorage.get('calib-thresholdSlider') || 128
+                            onValueChanged: localStorage.set('calib-thresholdSlider', value)
+                        }
 
-                InputSlider {
-                    id: meshYSlider
-                    width: sliderWidth
-                    label: 'TargetY'
-                    min: 0.0
-                    max: 1.0
-                    fixedLength: 4
-                    defaultValue: localStorage.get('calib-ySlider') || 0.25
-                    onValueChanged: localStorage.set('calib-ySlider', value)
-                }
+                        InputSlider {
+                            id: meshXSlider
+                            width: sliderWidth
+                            label: 'Target X'
+                            min: 0.0
+                            max: 1.0
+                            fixedLength: 4
+                            defaultValue: localStorage.get('calib-xSlider') || 0.25
+                            onValueChanged: localStorage.set('calib-xSlider', value)
+                        }
 
-                InputSlider {
-                    id: meshWidthSlider
-                    width: sliderWidth
-                    label: 'Target Width'
-                    min: 0.0
-                    max: 1.0
-                    fixedLength: 4
-                    defaultValue: localStorage.get('calib-widthSlider') || 0.5
-                    onValueChanged: localStorage.set('calib-widthSlider', value)
-                }
+                        InputSlider {
+                            id: meshYSlider
+                            width: sliderWidth
+                            label: 'TargetY'
+                            min: 0.0
+                            max: 1.0
+                            fixedLength: 4
+                            defaultValue: localStorage.get('calib-ySlider') || 0.25
+                            onValueChanged: localStorage.set('calib-ySlider', value)
+                        }
 
-                InputSlider {
-                    id: meshHeightSlider
-                    width: sliderWidth
-                    label: 'Target Height'
-                    min: 0.0
-                    max: 1.0
-                    fixedLength: 4
-                    defaultValue: localStorage.get('calib-heightSlider') || 0.5
-                    onValueChanged: localStorage.set('calib-heightSlider', value)
-                }
+                        InputSlider {
+                            id: meshWidthSlider
+                            width: sliderWidth
+                            label: 'Target Width'
+                            min: 0.0
+                            max: 1.0
+                            fixedLength: 4
+                            defaultValue: localStorage.get('calib-widthSlider') || 0.5
+                            onValueChanged: localStorage.set('calib-widthSlider', value)
+                        }
 
+                        InputSlider {
+                            id: meshHeightSlider
+                            width: sliderWidth
+                            label: 'Target Height'
+                            min: 0.0
+                            max: 1.0
+                            fixedLength: 4
+                            defaultValue: localStorage.get('calib-heightSlider') || 0.5
+                            onValueChanged: localStorage.set('calib-heightSlider', value)
+                        }
+                    }
+                }
             }
         }
 
